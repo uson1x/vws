@@ -197,7 +197,6 @@ module Vws
       target_result_code = target_data["result_code"]
       if target_result_code != "AuthenticationFailure"
         if target_result_code != "UnknownTarget"   
-          target_active_flag = target_data["target_record"]["active_flag"]
           target_status = target_data["status"]
           if target_result_code == "Success"
             if target_status != "processing"
