@@ -200,9 +200,7 @@ module Vws
           target_active_flag = target_data["target_record"]["active_flag"]
           target_status = target_data["status"]
           if target_result_code == "Success"
-            if target_active_flag == true && target_status == "success"
-              return {:result_code => "TargetActive"}.to_json
-            elsif target_active_flag == false && target_status == "success"
+            if target_status != "processing"
               # if we reached this point, the target is fine, inactive and 
               # ready to be deleted
               date_timestamp = Time.now.httpdate
