@@ -81,8 +81,8 @@ module Vws
       body_hash = { :name => target_name, 
                     :width => width, #width of the target in scene units
                     :image => contents_encoded, 
-                    :active_flag => active_flag, 
-                    :application_metadata => metadata_encoded }
+                    :active_flag => active_flag }
+      body_hash[:application_metadata] = metadata_encoded if metadata.present?
       signature = self.build_signature('/targets', body_hash, 'POST', date_timestamp)
       authorization_header = "VWS " + @accesskey + ":" +  signature
       begin
@@ -101,13 +101,14 @@ module Vws
       target_id_url = TARGETS_URL + '/' + target_id
       target_id_suburl = '/targets' + '/' + target_id  
       #for file uploads, read file contents data and Base 64 encode it:
-      contents_encoded = Base64.encode64(open(file_path) { |io| io.read })
-      metadata_encoded = Base64.encode64(metadata.to_s)
+      contents_encoded = Base64.encode64(open(file_path) { |io| io.read }) if file_path.present?
+      metadata_encoded = Base64.encode64(metadata.to_s) if metadata.present?
       body_hash = { :name => target_name, 
                     :width => width, #Width of the target in scene unit
                     :image => contents_encoded, 
                     :active_flag => active_flag,
                     :application_metadata => metadata_encoded }
+      body_hash.keep_if { |key, value| value.present? }
       signature = self.build_signature(target_id_suburl, body_hash, 'PUT', date_timestamp)
       authorization_header = "VWS " + @accesskey + ":" +  signature
       begin
